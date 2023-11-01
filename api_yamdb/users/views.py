@@ -31,9 +31,6 @@ def register(request):
             serializer.save()
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
-
-
-
     user = get_object_or_404(
         MyUser,
         username=serializer.validated_data['username'],

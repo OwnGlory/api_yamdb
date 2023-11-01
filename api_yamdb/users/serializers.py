@@ -1,7 +1,9 @@
 import re
+from django.shortcuts import get_object_or_404
 
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.serializers import TokenObtainPairSerializer
 
 from users.models import MyUser
 
@@ -67,6 +69,21 @@ class RegisterDataSerializer(serializers.ModelSerializer):
         fields = ('username', 'email')
         model = MyUser
 
+
+class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
+    username = serializers.CharField()
+    confirmation_code = serializers.CharField()
+
+    def validate_username(self, value):
+        get_object_or_404(MyUser, username=value)
+        return value
+
+    @classmethod
+    def get_token(cls, user):
+        get_object_or_404(MyUser, username=user)
+        token = super().get_token(user)
+        token['name'] = user.name
+        return token
 
 class TokenSerializer(serializers.Serializer):
     username = serializers.CharField()
