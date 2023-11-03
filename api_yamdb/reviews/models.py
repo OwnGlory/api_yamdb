@@ -1,6 +1,10 @@
 from django.contrib.auth import get_user_model
 from django.db import models
-from django.core.validators import MaxValueValidator, MinValueValidator
+from django.core.validators import (
+    MaxValueValidator,
+    MinValueValidator,
+    validate_slug
+)
 
 
 User = get_user_model()
@@ -14,7 +18,8 @@ class Category(models.Model):
     slug = models.CharField(
         max_length=50,
         unique=True,
-        verbose_name='Слаг'
+        verbose_name='Слаг',
+        validators=[validate_slug]
     )
 
     def __str__(self):
@@ -34,7 +39,8 @@ class Genre(models.Model):
     slug = models.CharField(
         verbose_name='Слаг',
         max_length=50,
-        unique=True
+        unique=True,
+        validators=[validate_slug]
     )
 
     def __str__(self):

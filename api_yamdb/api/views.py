@@ -2,7 +2,7 @@ from rest_framework import viewsets, filters
 from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg
-from django_filters.rest_framework import DjangoFilterBackend
+from django_filters import rest_framework as fs
 
 from reviews.models import (Review, Title, Category, Genre, Title)
 from api.serializers import (
@@ -17,24 +17,33 @@ from users.permissions import (IsAdminModeratorOwnerOrReadOnly,
                                IsAdminOrReadOnly)
 
 
+class TitleFilter(fs.FilterSet):
+    name = fs.CharFilter(field_name='name')
+    category = fs.CharFilter(field_name='category', lookup_expr='slug')
+    genre = fs.CharFilter(field_name='genre', lookup_expr='slug')
+    year = fs.NumberFilter(field_name='year')
+
+    class Meta:
+        model = Title
+        fields = ['name', 'category', 'genre', 'year']
+
+
 class CategoryViewSet(viewsets.ModelViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
-    filter_backends = [filters.SearchFilter]
+    filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAdminOrReadOnly,)
-    lookup_field = 'slug'
 
 
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
-    search_fields = ('name', '$slug')
+    filter_backends = (filters.SearchFilter,)
+    search_fields = ('name',)
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAdminOrReadOnly,)
-    # lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -43,8 +52,8 @@ class TitleViewSet(viewsets.ModelViewSet):
         Avg('reviews__score')
     ).order_by('name')
     serializer_class = TitleSerializer
-    filter_backends = (DjangoFilterBackend,)
-    filterset_fields = ('name', 'year', 'genre', 'category',)
+    filter_backends = (fs.DjangoFilterBackend,)
+    filterset_class = TitleFilter
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAdminOrReadOnly,)
 

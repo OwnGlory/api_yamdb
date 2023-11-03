@@ -39,6 +39,7 @@ class CommentSerializer(serializers.ModelSerializer):
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    # slug = serializers.SlugRelatedField(slug_field="name", read_only=False)
 
     class Meta:
         model = Category
@@ -46,6 +47,7 @@ class CategorySerializer(serializers.ModelSerializer):
 
 
 class GenreSerializer(serializers.ModelSerializer):
+    # slug = serializers.SlugRelatedField(slug_field="name", read_only=False)
 
     class Meta:
         model = Genre
