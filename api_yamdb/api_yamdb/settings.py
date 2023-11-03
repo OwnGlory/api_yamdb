@@ -15,8 +15,6 @@ AUTH_USER_MODEL = 'users.MyUser'
 # Application definition
 
 INSTALLED_APPS = [
-    'catalog.apps.ApiConfig',
-    'catalog.apps.ReviewsConfig',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -24,6 +22,9 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'users',
+    'rest_framework',
+    'api.apps.ApiConfig',
+    'reviews.apps.ReviewsConfig',
 ]
 
 MIDDLEWARE = [
