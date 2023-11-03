@@ -13,7 +13,8 @@ from api.serializers import (
     CommentSerializer,
     ReviewSerializer
 )
-from api.permission import IsAdminModeratorOwnerOrReadOnly
+from users.permissions import (IsAdminModeratorOwnerOrReadOnly,
+                               IsAdminOrReadOnly)
 
 
 class CategoryViewSet(viewsets.ModelViewSet):
@@ -22,7 +23,7 @@ class CategoryViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
     pagination_class = LimitOffsetPagination
-    permission_classes = ...
+    permission_classes = (IsAdminOrReadOnly,)
     lookup_field = 'slug'
 
 
@@ -32,22 +33,23 @@ class GenreViewSet(viewsets.ModelViewSet):
     filter_backends = [filters.SearchFilter]
     search_fields = ('name',)
     pagination_class = LimitOffsetPagination
-    permission_classes = ...
+    permission_classes = (IsAdminOrReadOnly,)
     lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
     http_method_names = ['get', 'post', 'head', 'patch', 'delete']
     queryset = Title.objects.all().annotate(
-        Avg("reviews__score")
-    ).order_by("name")
+        Avg('reviews__score')
+    ).order_by('name')
     serializer_class = TitleSerializer
     filter_backends = [DjangoFilterBackend]
     filterset_fields = ('name', 'year', 'genre', 'category')
     pagination_class = LimitOffsetPagination
+    permission_classes = (IsAdminOrReadOnly,)
 
     def get_serializer_class(self):
-        if self.action in ("retrieve", "list"):
+        if self.action in ('retrieve', 'list'):
             return ReadOnlyTitleSerializer
         return TitleSerializer
 

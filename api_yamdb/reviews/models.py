@@ -88,8 +88,7 @@ class Title(models.Model):
 class Review(models.Model):
     text = models.TextField()
     title = models.ForeignKey(
-        Title, on_delete=models.CASCADE, related_name='reviews',
-        read_only=True
+        Title, on_delete=models.CASCADE, related_name='reviews'
     )
     author = models.ForeignKey(
         User, on_delete=models.CASCADE, related_name='reviews'
@@ -110,8 +109,7 @@ class Comment(models.Model):
         User, on_delete=models.CASCADE, related_name='comments'
     )
     review = models.ForeignKey(
-        Review, on_delete=models.CASCADE, related_name='comments',
-        read_only=True
+        Review, on_delete=models.CASCADE, related_name='comments'
     )
     pub_date = models.DateTimeField(
         'Дата добавления', auto_now_add=True
