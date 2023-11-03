@@ -15,6 +15,7 @@ from api.serializers import (
 )
 from users.permissions import (IsAdminModeratorOwnerOrReadOnly,
                                IsAdminOrReadOnly)
+from .mixins import ListCreateDestroyViewSet
 
 
 class TitleFilter(fs.FilterSet):
@@ -28,21 +29,21 @@ class TitleFilter(fs.FilterSet):
         fields = ['name', 'category', 'genre', 'year']
 
 
-class CategoryViewSet(viewsets.ModelViewSet):
+class CategoryViewSet(ListCreateDestroyViewSet):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    pagination_class = LimitOffsetPagination
+    lookup_field = 'slug'
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class GenreViewSet(viewsets.ModelViewSet):
+class GenreViewSet(ListCreateDestroyViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
     search_fields = ('name',)
-    pagination_class = LimitOffsetPagination
+    lookup_field = 'slug'
     permission_classes = (IsAdminOrReadOnly,)
 
 
