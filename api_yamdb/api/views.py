@@ -1,8 +1,8 @@
 from rest_framework import viewsets, filters
 from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import get_object_or_404
-from django_filters.rest_framework import DjangoFilterBackend
 from django.db.models import Avg
+from django_filters.rest_framework import DjangoFilterBackend
 
 from reviews.models import (Review, Title, Category, Genre, Title)
 from api.serializers import (
@@ -30,11 +30,11 @@ class CategoryViewSet(viewsets.ModelViewSet):
 class GenreViewSet(viewsets.ModelViewSet):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
-    filter_backends = [filters.SearchFilter]
-    search_fields = ('name',)
+    filter_backends = (DjangoFilterBackend, filters.SearchFilter)
+    search_fields = ('name', '$slug')
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAdminOrReadOnly,)
-    lookup_field = 'slug'
+    # lookup_field = 'slug'
 
 
 class TitleViewSet(viewsets.ModelViewSet):
@@ -43,8 +43,8 @@ class TitleViewSet(viewsets.ModelViewSet):
         Avg('reviews__score')
     ).order_by('name')
     serializer_class = TitleSerializer
-    filter_backends = [DjangoFilterBackend]
-    filterset_fields = ('name', 'year', 'genre', 'category')
+    filter_backends = (DjangoFilterBackend,)
+    filterset_fields = ('name', 'year', 'genre', 'category',)
     pagination_class = LimitOffsetPagination
     permission_classes = (IsAdminOrReadOnly,)
 
@@ -56,6 +56,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Класс для работы с отзывами."""
+    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (IsAdminModeratorOwnerOrReadOnly,)
@@ -75,6 +76,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     """Класс для работы с комментариями."""
+    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
     serializer_class = CommentSerializer
     permission_classes = (IsAdminModeratorOwnerOrReadOnly,)
     pagination_class = LimitOffsetPagination

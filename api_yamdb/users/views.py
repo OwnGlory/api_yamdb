@@ -9,8 +9,12 @@ from rest_framework_simplejwt.tokens import AccessToken
 
 from users.models import MyUser
 from .permissions import IsAdmin
-from .serializers import  (RegisterDataSerializer, TokenSerializer,
-                           UserEditSerializer, UserSerializer)
+from .serializers import (
+    RegisterDataSerializer,
+    TokenSerializer,
+    UserEditSerializer,
+    UserSerializer,
+)
 
 
 @api_view(['POST'])
@@ -22,15 +26,16 @@ def register(request):
     if not MyUser.objects.filter(
         username=serializer.validated_data['username'],
         email=serializer.validated_data['email'],
-        ):
+    ):
         if not MyUser.objects.filter(
-        username=serializer.validated_data['username'],
+            username=serializer.validated_data['username'],
         ) and not MyUser.objects.filter(
-        email=serializer.validated_data['email'],
+            email=serializer.validated_data['email'],
         ):
             serializer.save()
         else:
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            return Response(serializer.errors,
+                            status=status.HTTP_400_BAD_REQUEST)
     user = get_object_or_404(
         MyUser,
         username=serializer.validated_data['username'],
