@@ -23,8 +23,9 @@ class UserSerializer(serializers.ModelSerializer):
     )
 
     def validate_username(self, value):
-        if not re.match('^[\w.@+-]+\Z', value):
-            raise serializers.ValidationError('usermane должен соответсвовать патерну ^[\w.@+-]+\Z')
+        if not re.match(r'^[\w.@+-]+\Z', value):
+            raise serializers.ValidationError('usermane должен соответсвовать'
+                                              'патерну ^[\\w.@+-]+\\Z')
         return value
 
     class Meta:
@@ -39,11 +40,13 @@ class UserEditSerializer(serializers.ModelSerializer):
                   'last_name', 'bio', 'role')
         model = MyUser
         read_only_fields = ('role',)
-    
+
     def validate_username(self, value):
-        if not re.match('^[\w.@+-]+\Z', value):
-            raise serializers.ValidationError('usermane должен соответсвовать патерну ^[\w.@+-]+\Z')
+        if not re.match(r'^[\w.@+-]+\Z', value):
+            raise serializers.ValidationError('usermane должен соответсвовать'
+                                              'патерну ^[\\w.@+-]+\\Z')
         return value
+
 
 class RegisterDataSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
@@ -55,11 +58,10 @@ class RegisterDataSerializer(serializers.ModelSerializer):
 
     )
 
-    
-
     def validate_username(self, value):
-        if not re.match('^[\w.@+-]+\Z', value):
-            raise serializers.ValidationError('usermane должен соответсвовать патерну ^[\w.@+-]+\Z')
+        if not re.match(r'^[\w.@+-]+\Z', value):
+            raise serializers.ValidationError('usermane должен соответсвовать'
+                                              'патерну ^[\\w.@+-]+\\Z')
 
         if value == 'me':
             raise serializers.ValidationError('Username "me" is not valid')
@@ -84,6 +86,7 @@ class MyTokenObtainPairSerializer(TokenObtainPairSerializer):
         token = super().get_token(user)
         token['name'] = user.name
         return token
+
 
 class TokenSerializer(serializers.Serializer):
     username = serializers.CharField()
