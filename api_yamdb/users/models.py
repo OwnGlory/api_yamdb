@@ -6,11 +6,11 @@ class MyUser(AbstractUser):
     ADMIN = 'admin'
     MODERATOR = 'moderator'
     USER = 'user'
-    ROLES = [
+    ROLES = (
         (ADMIN, 'Administrator'),
         (MODERATOR, 'Moderator'),
         (USER, 'User'),
-    ]
+    )
     USERNAME_FIELD = 'email'
     REQUIRED_FIELDS = ('username',)
 
