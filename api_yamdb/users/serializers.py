@@ -11,27 +11,27 @@ from users.models import MyUser
 class UserSerializer(serializers.ModelSerializer):
     username = serializers.CharField(
         max_length=150,
-        validators=[
-            UniqueValidator(queryset=MyUser.objects.all())
-        ]
+        validators=(
+            UniqueValidator(queryset=MyUser.objects.all()),
+        )
     )
     email = serializers.EmailField(
         max_length=254,
-        validators=[
-            UniqueValidator(queryset=MyUser.objects.all())
-        ]
+        validators=(
+            UniqueValidator(queryset=MyUser.objects.all()),
+        )
     )
+
+    class Meta:
+        fields = ('username', 'email', 'first_name',
+                  'last_name', 'bio', 'role')
+        model = MyUser
 
     def validate_username(self, value):
         if not re.match(r'^[\w.@+-]+\Z', value):
             raise serializers.ValidationError('usermane должен соответсвовать'
                                               'патерну ^[\\w.@+-]+\\Z')
         return value
-
-    class Meta:
-        fields = ('username', 'email', 'first_name',
-                  'last_name', 'bio', 'role')
-        model = MyUser
 
 
 class UserEditSerializer(serializers.ModelSerializer):
@@ -58,6 +58,10 @@ class RegisterDataSerializer(serializers.ModelSerializer):
 
     )
 
+    class Meta:
+        fields = ('username', 'email')
+        model = MyUser
+
     def validate_username(self, value):
         if not re.match(r'^[\w.@+-]+\Z', value):
             raise serializers.ValidationError('usermane должен соответсвовать'
@@ -66,10 +70,6 @@ class RegisterDataSerializer(serializers.ModelSerializer):
         if value == 'me':
             raise serializers.ValidationError('Username "me" is not valid')
         return value
-
-    class Meta:
-        fields = ('username', 'email')
-        model = MyUser
 
 
 class MyTokenObtainPairSerializer(TokenObtainPairSerializer):

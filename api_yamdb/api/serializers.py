@@ -11,6 +11,10 @@ class ReviewSerializer(serializers.ModelSerializer):
         slug_field='username', read_only=True
     )
 
+    class Meta:
+        fields = ('id', 'text', 'author', 'score', 'pub_date')
+        model = Review
+
     def validate(self, data):
         request = self.context['request']
         author = request.user
@@ -21,10 +25,6 @@ class ReviewSerializer(serializers.ModelSerializer):
                 raise ValidationError('Вы не можете добавить более'
                                       'одного отзыва на произведение')
         return data
-
-    class Meta:
-        fields = ('id', 'text', 'author', 'score', 'pub_date')
-        model = Review
 
 
 class CommentSerializer(serializers.ModelSerializer):

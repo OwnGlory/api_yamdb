@@ -28,7 +28,7 @@ class Category(models.Model):
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
-        ordering = ['name']
+        ordering = ('name',)
 
 
 class Genre(models.Model):
@@ -49,7 +49,7 @@ class Genre(models.Model):
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
-        ordering = ['name']
+        ordering = ('name',)
 
 
 class Title(models.Model):
@@ -88,7 +88,7 @@ class Title(models.Model):
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
-        ordering = ['name']
+        ordering = ('name',)
 
 
 class Review(models.Model):
@@ -100,7 +100,7 @@ class Review(models.Model):
         User, on_delete=models.CASCADE, related_name='reviews'
     )
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
-    score = models.IntegerField(validators=[
+    score = models.PositiveSmallIntegerField(validators=[
         MaxValueValidator(10), MinValueValidator(1)
     ])
 

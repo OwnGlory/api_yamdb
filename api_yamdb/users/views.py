@@ -17,8 +17,8 @@ from .serializers import (
 )
 
 
-@api_view(['POST'])
-@permission_classes([permissions.AllowAny])
+@api_view(('POST',))
+@permission_classes((permissions.AllowAny,))
 def register(request):
 
     serializer = RegisterDataSerializer(data=request.data)
@@ -46,13 +46,13 @@ def register(request):
         subject='YaMDb registration',
         message=f'Your confirmation code: {confirmation_code}',
         from_email=None,
-        recipient_list=[user.email],
+        recipient_list=(user.email,),
     )
     return Response(serializer.data, status=status.HTTP_200_OK)
 
 
-@api_view(['POST'])
-@permission_classes([permissions.AllowAny])
+@api_view(('POST',))
+@permission_classes((permissions.AllowAny,))
 def get_jwt_token(request):
     serializer = TokenSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
@@ -78,16 +78,16 @@ class UserViewSet(viewsets.ModelViewSet):
     permission_classes = (IsAdmin,)
     filter_backends = (filters.SearchFilter,)
     search_fields = ('=username',)
-    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
+    http_method_names = ('get', 'post', 'head', 'patch', 'delete',)
 
     @action(
-        methods=[
+        methods=(
             'get',
             'patch',
-        ],
+        ),
         detail=False,
         url_path='me',
-        permission_classes=[permissions.IsAuthenticated],
+        permission_classes=(permissions.IsAuthenticated,),
         serializer_class=UserEditSerializer,
     )
     def users_own_profile(self, request):
@@ -95,13 +95,11 @@ class UserViewSet(viewsets.ModelViewSet):
         if request.method == 'GET':
             serializer = self.get_serializer(user)
             return Response(serializer.data, status=status.HTTP_200_OK)
-        if request.method == 'PATCH':
-            serializer = self.get_serializer(
-                user,
-                data=request.data,
-                partial=True
-            )
-            serializer.is_valid(raise_exception=True)
-            serializer.save()
-            return Response(serializer.data, status=status.HTTP_200_OK)
-        return Response(status=status.HTTP_405_METHOD_NOT_ALLOWED)
+        serializer = self.get_serializer(
+            user,
+            data=request.data,
+            partial=True
+        )
+        serializer.is_valid(raise_exception=True)
+        serializer.save()
+        return Response(serializer.data, status=status.HTTP_200_OK)

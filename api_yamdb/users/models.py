@@ -11,6 +11,8 @@ class MyUser(AbstractUser):
         (MODERATOR, 'Moderator'),
         (USER, 'User'),
     ]
+    USERNAME_FIELD = 'email'
+    REQUIRED_FIELDS = ('username',)
 
     email = models.EmailField(
         verbose_name='Адрес электронной почты',
@@ -35,6 +37,11 @@ class MyUser(AbstractUser):
         blank=True
     )
 
+    class Meta:
+        ordering = ('id',)
+        verbose_name = 'Пользователь'
+        verbose_name_plural = 'Пользователи'
+
     @property
     def is_moderator(self):
         return self.role == self.MODERATOR
@@ -42,11 +49,3 @@ class MyUser(AbstractUser):
     @property
     def is_admin(self):
         return self.role == self.ADMIN
-
-    USERNAME_FIELD = 'email'
-    REQUIRED_FIELDS = ['username']
-
-    class Meta:
-        ordering = ['id']
-        verbose_name = 'Пользователь'
-        verbose_name_plural = 'Пользователи'

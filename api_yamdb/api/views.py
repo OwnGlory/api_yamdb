@@ -1,4 +1,4 @@
-from rest_framework import viewsets, filters
+from rest_framework import viewsets, filters, mixins
 from rest_framework.pagination import LimitOffsetPagination
 from django.shortcuts import get_object_or_404
 from django.db.models import Avg
@@ -15,7 +15,6 @@ from api.serializers import (
 )
 from users.permissions import (IsAdminModeratorOwnerOrReadOnly,
                                IsAdminOrReadOnly)
-from .mixins import ListCreateDestroyViewSet
 
 
 class TitleFilter(fs.FilterSet):
@@ -26,10 +25,15 @@ class TitleFilter(fs.FilterSet):
 
     class Meta:
         model = Title
-        fields = ['name', 'category', 'genre', 'year']
+        fields = ('name', 'category', 'genre', 'year')
 
 
-class CategoryViewSet(ListCreateDestroyViewSet):
+class CategoryViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = Category.objects.all()
     serializer_class = CategorySerializer
     filter_backends = (filters.SearchFilter,)
@@ -38,7 +42,12 @@ class CategoryViewSet(ListCreateDestroyViewSet):
     permission_classes = (IsAdminOrReadOnly,)
 
 
-class GenreViewSet(ListCreateDestroyViewSet):
+class GenreViewSet(
+    mixins.ListModelMixin,
+    mixins.CreateModelMixin,
+    mixins.DestroyModelMixin,
+    viewsets.GenericViewSet,
+):
     queryset = Genre.objects.all()
     serializer_class = GenreSerializer
     filter_backends = (filters.SearchFilter,)
@@ -48,7 +57,7 @@ class GenreViewSet(ListCreateDestroyViewSet):
 
 
 class TitleViewSet(viewsets.ModelViewSet):
-    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
+    http_method_names = ('get', 'post', 'head', 'patch', 'delete')
     queryset = Title.objects.all().annotate(
         Avg('reviews__score')
     ).order_by('name')
@@ -66,7 +75,7 @@ class TitleViewSet(viewsets.ModelViewSet):
 
 class ReviewViewSet(viewsets.ModelViewSet):
     """Класс для работы с отзывами."""
-    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
+    http_method_names = ('get', 'post', 'head', 'patch', 'delete')
     queryset = Review.objects.all()
     serializer_class = ReviewSerializer
     permission_classes = (IsAdminModeratorOwnerOrReadOnly,)
@@ -86,7 +95,7 @@ class ReviewViewSet(viewsets.ModelViewSet):
 
 class CommentViewSet(viewsets.ModelViewSet):
     """Класс для работы с комментариями."""
-    http_method_names = ['get', 'post', 'head', 'patch', 'delete']
+    http_method_names = ('get', 'post', 'head', 'patch', 'delete')
     serializer_class = CommentSerializer
     permission_classes = (IsAdminModeratorOwnerOrReadOnly,)
     pagination_class = LimitOffsetPagination
