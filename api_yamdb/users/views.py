@@ -28,7 +28,9 @@ def register(request):
         email=serializer.validated_data['email'],
     ):
 
-        if MyUser.objects.filter(username=serializer.validated_data['username']):
+        if MyUser.objects.filter(
+            username=serializer.validated_data['username']
+        ):
             return Response(
                 {
                     'username': 'Такое имя уже есть.'

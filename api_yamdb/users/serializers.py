@@ -1,6 +1,4 @@
 import re
-from django.shortcuts import get_object_or_404
-
 from rest_framework import serializers
 from rest_framework.validators import UniqueValidator
 
@@ -62,10 +60,9 @@ class RegisterDataSerializer(serializers.Serializer):
         if value == 'me':
             raise serializers.ValidationError('Username "me" is not valid')
         return value
-    
+
     def create(self, validated_data):
         return MyUser.objects.create(**validated_data)
-
 
 
 class TokenSerializer(serializers.Serializer):
