@@ -24,21 +24,21 @@ def register(request):
     serializer = RegisterDataSerializer(data=request.data)
     serializer.is_valid(raise_exception=True)
     if not MyUser.objects.filter(
-        username=serializer.validated_data["username"],
-        email=serializer.validated_data["email"],
+        username=serializer.validated_data['username'],
+        email=serializer.validated_data['email'],
     ):
 
-        if MyUser.objects.filter(username=serializer.validated_data["username"]):
+        if MyUser.objects.filter(username=serializer.validated_data['username']):
             return Response(
                 {
-                    "username": 'Такое имя уже есть.'
+                    'username': 'Такое имя уже есть.'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )
-        if MyUser.objects.filter(email=serializer.validated_data["email"]):
+        if MyUser.objects.filter(email=serializer.validated_data['email']):
             return Response(
                 {
-                    "email": 'На почту уже зарегистрирован аккаунт.'
+                    'email': 'На почту уже зарегистрирован аккаунт.'
                 },
                 status=status.HTTP_400_BAD_REQUEST
             )

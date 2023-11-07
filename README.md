@@ -22,7 +22,8 @@ cd api_yamdb
 ### Cоздать и активировать виртуальное окружение:
 
 python -m venv venv
-source venv/Source/activate
+source venv/Scripts/activate
+cd api_yamdb/
 
 ### Установить зависимости из файла requirements.txt:
 
