@@ -19,16 +19,16 @@ class Category(models.Model):
         max_length=50,
         unique=True,
         verbose_name='Слаг',
-        validators=[validate_slug]
+        validators=(validate_slug,)
     )
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         verbose_name = 'Категория'
         verbose_name_plural = 'Категории'
         ordering = ('name',)
+
+    def __str__(self):
+        return self.name
 
 
 class Genre(models.Model):
@@ -40,16 +40,16 @@ class Genre(models.Model):
         verbose_name='Слаг',
         max_length=50,
         unique=True,
-        validators=[validate_slug]
+        validators=(validate_slug,)
     )
-
-    def __str__(self):
-        return self.name
 
     class Meta:
         verbose_name = 'Жанр'
         verbose_name_plural = 'Жанры'
         ordering = ('name',)
+
+    def __str__(self):
+        return self.name
 
 
 class Title(models.Model):
@@ -82,13 +82,13 @@ class Title(models.Model):
         default=None
     )
 
-    def __str__(self):
-        return self.name
-
     class Meta:
         verbose_name = 'Произведение'
         verbose_name_plural = 'Произведения'
         ordering = ('name',)
+
+    def __str__(self):
+        return self.name
 
 
 class Review(models.Model):
@@ -100,17 +100,17 @@ class Review(models.Model):
         User, on_delete=models.CASCADE, related_name='reviews'
     )
     pub_date = models.DateTimeField('Дата публикации', auto_now_add=True)
-    score = models.PositiveSmallIntegerField(validators=[
+    score = models.PositiveSmallIntegerField(validators=(
         MaxValueValidator(10), MinValueValidator(1)
-    ])
+    ))
 
     class Meta:
-        constraints = [
+        constraints = (
             models.UniqueConstraint(
                 fields=('author', 'title',),
                 name='unique_review'
-            )
-        ]
+            ),
+        )
         verbose_name = "Отзыв"
         verbose_name_plural = "Отзывы"
 
